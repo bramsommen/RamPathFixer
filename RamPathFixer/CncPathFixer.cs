@@ -106,9 +106,26 @@ namespace RamPathFixer
                         pointCounter++;
                     }
 
+                    //Zoeken in welke richting het werksuk moet gaan
+                    // Als er punten zijn die een X waarde hebben kleiner dan het startpunt... dan moet het laatste punt ver onder 0 liggen om zo de bewerking in de X richting maar één keer te makne
+                    RamPoint rmpPointNegative = OrgRampaPunten.Where(x => x.X__P41 < OrgRampaPunten[0].X__P41).FirstOrDefault();
+
+                    long lastPosition = 0;
+                    if (rmpPointNegative == null)
+                        // Startpunt is X-laag, dus het laatste virtuele punt moet X positief zijn
+                    {
+                        lastPosition = 3050 * 1000;
+                    }
+                    else
+                    // Startpunt is X-Hoog, dus het laatste virtuele punt moet X negatief zijn
+                    {
+                        lastPosition = (0 - 3050) * 1000;
+                    }
+
+
                     // EIND PUNT
-                    tspValues[0, pointCounter] = 3050*1000; // X EINDE ==> Eindpunt voor de berekening ligt factor 1000 buiten het bereik van de X-As.
-                    tspValues[1, pointCounter] = 1250/2; // Y EINDE ==> Eindpunt ligt centraal in de Y richting
+                    tspValues[0, pointCounter] = lastPosition; // X EINDE ==> Eindpunt voor de berekening ligt factor 1000 buiten het bereik van de X-As.
+                    tspValues[1, pointCounter] = 1250 / 2; // Y EINDE ==> Eindpunt ligt centraal in de Y richting
 
                     // Resultaat na optimalisatie
                     double[,] result = Tsp.do2opt(tspValues);
@@ -190,7 +207,7 @@ namespace RamPathFixer
                 FileInfo OrgFile = new FileInfo(FilePath);
 
                 // Kopier origineel bestand naar archief
-                File.Copy(OrgFile.FullName, $"{ArchiveLog.OrgHomagOptiPath}\\{OrgFile.Name}",true);
+                File.Copy(OrgFile.FullName, $"{ArchiveLog.OrgHomagOptiPath}\\{OrgFile.Name}", true);
 
                 using (StreamWriter txtWriter = new StreamWriter($"{ArchiveLog.NewAfterRamPathFixerPath}\\{OrgFile.Name}"))
                 {
@@ -373,7 +390,7 @@ namespace RamPathFixer
                         {
                             // Resultaat * 1000 omdat de lengtes van de X beweging zeer nadelig zijn.
                             // Hier wordt de X value véél groter dan Y en zal de routine de Y route verkiezen ipv X
-                            return result*1000;
+                            return result * 1000;
                         }
                         return 0;
 

@@ -12,6 +12,10 @@ namespace RamPathFixer
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("RELEASE NOTES:");
+            Console.WriteLine("BS 12/12/2019: Als de start positie afwijkt van - dichtbij 0 - dan wordt er voor de pad bepaler TSP een negatieve virtueel eindpunt bepaald.");
+            Console.WriteLine("Als er punten zijn met een kleinere X waarde dan het startpunt == virtueel eind punt kleiner dan 0, anders virtueel eind punt 3050 *1000");
+
             Run(); // Start APP
 
             // Screen Hold
